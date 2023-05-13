@@ -33,3 +33,14 @@ class Gameweeks:
         :return: None
         """
         self.gameweeks = self.gameweeks.merge(end_of_season.end_of_season[["name", "position"]], on="name", how="left")
+
+    def map_opponent_team(self, game_odds):
+        """
+        maps the opponent team in the gameweeks data from an integer representing the teams position alphabetically in
+        the league using the team names in the game odds' data
+        :param game_odds: pandas.core.frame.DataFrame
+        :return: None
+        """
+        sorted_team_names = enumerate(sorted(game_odds["HomeTeam"].unique()))
+        team_name_dict = {key + 1: value for key, value in sorted_team_names}
+        self.gameweeks["opponent_team"] = self.gameweeks["opponent_team"].replace(team_name_dict)

@@ -30,3 +30,7 @@ for season in gameweeks_dict.keys():
         end_of_season.map_position()
 
         gameweeks.join_position(end_of_season)
+
+    game_odds = pd.read_csv("../../data/game_odds/{}-game-odds.csv".format(season))
+
+    gameweeks.map_opponent_team(game_odds)

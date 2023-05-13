@@ -18,13 +18,20 @@ opponent_index_dict = {
     8: 9,
     9: 8
 }
-
 gameweeks_2020_21 = pd.read_csv("../../data/gameweeks/2020-21-gameweeks.csv", encoding="utf-8")
 gameweeks_2020_21["plays_for"] = gameweeks_2020_21["team"].replace(team_name_dict)
 gameweeks_2020_21["opponent_team"] = gameweeks_2020_21["opponent_team"].replace(opponent_index_dict)
 
+opponent_index_dict = {
+    9: 10,
+    10: 9
+}
 gameweeks_2021_22 = pd.read_csv("../../data/gameweeks/2021-22-gameweeks.csv", encoding="utf-8")
 gameweeks_2021_22["opponent_team"] = gameweeks_2021_22["opponent_team"].replace(opponent_index_dict)
 
+opponent_index_dict = {
+    10: 11,
+    11: 10
+}
 gameweeks_2022_23 = pd.read_csv("../../data/gameweeks/2022-23-gameweeks.csv", encoding="utf-8")
 gameweeks_2022_23["opponent_team"] = gameweeks_2022_23["opponent_team"].replace(opponent_index_dict)
