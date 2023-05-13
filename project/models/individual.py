@@ -13,7 +13,7 @@ team_name_dict = {
     "Sheffield Utd": "Sheffield United",
     "Spurs": "Tottenham"
 }
-# The opponent number for 2 teams need to be swapped to align with the game odds sorted team names.
+# The opponent index for 2 teams need to be swapped to align with the game odds sorted team names.
 opponent_index_dict = {
     8: 9,
     9: 8
