@@ -14,3 +14,5 @@ gameweeks.add_season(CURRENT_SEASON)
 game_odds = pd.read_csv("../../data/game_odds/{}-game-odds.csv".format(CURRENT_SEASON))
 
 gameweeks.map_opponent_team(game_odds)
+gameweeks.add_teams()
+gameweeks.add_times_of_match()
