@@ -4,6 +4,7 @@ Transform the gameweeks data of the finished seasons so that it is aligned acros
 import pandas as pd
 from project.models.individual import gameweeks_2018_19, gameweeks_2020_21, gameweeks_2021_22
 from project.models.gameweeks import Gameweeks
+from project.models.end_of_season import EndOfSeason
 
 gameweeks_dict = {
     "2016-17": pd.read_csv('../../data/gameweeks/2016-17-gameweeks.csv', encoding="latin-1"),
@@ -21,3 +22,11 @@ for season in gameweeks_dict.keys():
 
     if season in {"2016-17", "2017-18", "2018-19", "2019-20"}:
         gameweeks.align_player_names()
+
+        end_of_season_df = pd.read_csv("../../data/end_of_season/{}-end-of-season.csv".format(season))
+
+        end_of_season = EndOfSeason(end_of_season_df)
+        end_of_season.align_player_names()
+        end_of_season.map_position()
+
+        gameweeks.join_position(end_of_season)

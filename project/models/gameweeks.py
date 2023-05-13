@@ -1,7 +1,6 @@
 """
 Class to transform the gameweeks data.
 """
-import pandas as pd
 
 
 class Gameweeks:
@@ -26,3 +25,11 @@ class Gameweeks:
         player_names = self.gameweeks["name"]
         split_player_names = [string.split(sep="_") for string in player_names]
         self.gameweeks["name"] = [name[0].capitalize() + " " + name[1].capitalize() for name in split_player_names]
+
+    def join_position(self, end_of_season):
+        """
+        joins the player position from the end of season data to the gameweeks data
+        :param end_of_season: CleanEndOfSeason
+        :return: None
+        """
+        self.gameweeks = self.gameweeks.merge(end_of_season.end_of_season[["name", "position"]], on="name", how="left")
