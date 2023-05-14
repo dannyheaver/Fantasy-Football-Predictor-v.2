@@ -127,15 +127,15 @@ class Gameweeks:
         groups the adjusted points into points cohorts
         :return: None
         """
-        shift_points = self.gameweeks["adjusted_points"]
-        self.gameweeks["adjusted_points_range"] = pd.cut(shift_points, [min(shift_points.dropna()), 0, 4, 10,
-                                                                              max(shift_points.dropna())],
-                                                               labels=[0, 1, 2, 3])
+        adjusted_points = self.gameweeks["adjusted_points"]
+        self.gameweeks["adjusted_points_range"] = pd.cut(adjusted_points, [min(adjusted_points.dropna()), 0, 4, 10,
+                                                                           max(adjusted_points.dropna())],
+                                                         labels=[0, 1, 2, 3])
 
     def take_useful_columns(self):
         """
         removes all depreciated columns
-        :return:
+        :return: None
         """
         useful_columns = ["season", "name", "position", "value", "adjusted_points_range", "assists", "goals_scored",
                           "goals_conceded", "saves", "own_goals", "penalties_missed", "penalties_saved", "clean_sheets",
