@@ -84,3 +84,21 @@ class Gameweeks:
         self.gameweeks["date_of_match"] = self.gameweeks["kickoff_time"].dt.date
         self.gameweeks["month_of_match"] = self.gameweeks["kickoff_time"].dt.month
         self.gameweeks["time_of_match"] = self.gameweeks["kickoff_time"].dt.strftime("%H:%M")
+
+    def join_odds(self, game_odds):
+        """
+        joins the BET365 home and away team odds to win the match from the game odds data to the gameweeks data
+        :param game_odds: pandas.core.frame.DataFrame
+        :return: None
+        """
+        self.gameweeks = self.gameweeks.merge(game_odds[["HomeTeam", "AwayTeam", "B365H", "B365A", "FTR"]],
+                                              on=["HomeTeam", "AwayTeam"], how="left")
+
+    def add_win_expectation(self):
+        """
+        adds the win expectation of the players team from the BET365 odds
+        :return: None
+        """
+        zipped_bet_odds = zip(self.gameweeks["was_home"], self.gameweeks["B365H"], self.gameweeks["B365A"])
+        self.gameweeks["win_expectation"] = [B365A / B365H if was_home else B365H / B365A for was_home, B365H, B365A in
+                                             zipped_bet_odds]

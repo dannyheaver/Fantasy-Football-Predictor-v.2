@@ -36,3 +36,5 @@ for season in gameweeks_dict.keys():
     gameweeks.map_opponent_team(game_odds)
     gameweeks.add_teams()
     gameweeks.add_times_of_match()
+    gameweeks.join_odds(game_odds)
+    gameweeks.add_win_expectation()
