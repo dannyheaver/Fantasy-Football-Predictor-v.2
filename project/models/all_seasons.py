@@ -49,7 +49,8 @@ class AllSeasons:
         mean_points, mean_creativity, mean_threat, mean_influence, mean_bps, mean_goals, mean_assists, mean_conceded = (
             [] for _ in range(8))
         for player, date in zip(self.all_seasons["name"], self.all_seasons["date_of_match"]):
-            players_df = self.all_seasons[(self.all_seasons["name"] == player) & (self.all_seasons["date_of_match"] < date)][
+            players_df = self.all_seasons[
+                             (self.all_seasons["name"] == player) & (self.all_seasons["date_of_match"] < date)][
                          :3]
             mean_points.append(players_df["adjusted_points"].mean())
             mean_creativity.append(players_df["creativity"].mean())
@@ -120,3 +121,50 @@ class AllSeasons:
         self.all_seasons["shift_mean_goals"] = pd.concat(shift_mean_goals).sort_index()
         self.all_seasons["shift_mean_assists"] = pd.concat(shift_mean_assists).sort_index()
         self.all_seasons["shift_mean_conceded"] = pd.concat(shift_mean_conceded).sort_index()
+
+    def form_against_next_opponent(self):
+        """
+        calculates the mean of the key metrics against the next opponent
+        :return: None
+        """
+        points_ano, creativity_ano, threat_ano, influence_ano, bps_ano, goals_ano, assists_ano, conceded_ano = ([] for _
+                                                                                                                in
+                                                                                                                range(
+                                                                                                                    8))
+        zipped_opponent_info = zip(self.all_seasons['name'], self.all_seasons['shift_opponent'])
+        for player, opponent in zipped_opponent_info:
+            players_df = self.all_seasons[
+                (self.all_seasons['name'] == player) & (
+                    self.all_seasons['opponent_team'] == opponent)]
+            points_ano.append(players_df['adjusted_points'].mean())
+            creativity_ano.append(players_df['creativity'].mean())
+            threat_ano.append(players_df['threat'].mean())
+            influence_ano.append(players_df['influence'].mean())
+            bps_ano.append(players_df['bps'].mean())
+            goals_ano.append(players_df['goals_scored'].mean())
+            assists_ano.append(players_df['assists'].mean())
+            conceded_ano.append(players_df['goals_conceded'].mean())
+        self.all_seasons['points_against_shift_opponent'] = points_ano
+        self.all_seasons['creativity_against_shift_opponent'] = creativity_ano
+        self.all_seasons['threat_against_shift_opponent'] = threat_ano
+        self.all_seasons['influence_against_shift_opponent'] = influence_ano
+        self.all_seasons['bps_against_shift_opponent'] = bps_ano
+        self.all_seasons['goals_against_shift_opponent'] = goals_ano
+        self.all_seasons['assists_against_shift_opponent'] = assists_ano
+        self.all_seasons['conceded_against_shift_opponent'] = conceded_ano
+        self.all_seasons["points_against_shift_opponent"] = self.all_seasons["points_against_shift_opponent"].fillna(
+            self.all_seasons["mean_adjusted_points"])
+        self.all_seasons["creativity_against_shift_opponent"] = self.all_seasons[
+            "creativity_against_shift_opponent"].fillna(self.all_seasons["mean_creativity"])
+        self.all_seasons["threat_against_shift_opponent"] = self.all_seasons["threat_against_shift_opponent"].fillna(
+            self.all_seasons["mean_threat"])
+        self.all_seasons["influence_against_shift_opponent"] = self.all_seasons[
+            "influence_against_shift_opponent"].fillna(self.all_seasons["mean_influence"])
+        self.all_seasons["bps_against_shift_opponent"] = self.all_seasons["bps_against_shift_opponent"].fillna(
+            self.all_seasons["mean_bps"])
+        self.all_seasons["goals_against_shift_opponent"] = self.all_seasons["goals_against_shift_opponent"].fillna(
+            self.all_seasons["mean_goals"])
+        self.all_seasons["assists_against_shift_opponent"] = self.all_seasons["assists_against_shift_opponent"].fillna(
+            self.all_seasons["mean_assists"])
+        self.all_seasons["conceded_against_shift_opponent"] = self.all_seasons[
+            "conceded_against_shift_opponent"].fillna(self.all_seasons["mean_conceded"])
