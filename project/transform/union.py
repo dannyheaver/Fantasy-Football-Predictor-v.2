@@ -11,3 +11,4 @@ gameweeks = AllSeasons(all_gameweeks)
 
 gameweeks.map_defender_position()
 gameweeks.map_midfielder_position()
+gameweeks.rolling_mean_metrics()
