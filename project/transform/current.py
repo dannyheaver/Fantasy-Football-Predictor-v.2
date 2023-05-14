@@ -10,6 +10,7 @@ CURRENT_SEASON = "2022-23"
 gameweeks = Gameweeks(gameweeks_2022_23)
 
 gameweeks.add_season(CURRENT_SEASON)
+gameweeks.add_value_delta()
 
 game_odds = pd.read_csv("../../data/game_odds/{}-game-odds.csv".format(CURRENT_SEASON))
 

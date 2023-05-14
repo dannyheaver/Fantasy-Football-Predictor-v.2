@@ -19,6 +19,7 @@ for season in gameweeks_dict.keys():
     gameweeks = Gameweeks(gameweeks_dict[season])
 
     gameweeks.add_season(season)
+    gameweeks.add_value_delta()
 
     if season in {"2016-17", "2017-18", "2018-19", "2019-20"}:
         gameweeks.align_player_names()

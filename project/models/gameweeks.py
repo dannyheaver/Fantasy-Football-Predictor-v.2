@@ -18,6 +18,18 @@ class Gameweeks:
         """
         self.gameweeks["season"] = season
 
+    def add_value_delta(self):
+        """
+        calculates the delta of the players value
+        :return: None
+        """
+        value_deltas = []
+        for player in self.gameweeks["name"].unique():
+            players_df = self.gameweeks[self.gameweeks["name"] == player]
+            value_deltas.append(players_df["value"].diff())
+        self.gameweeks["value_delta"] = pd.concat(value_deltas).sort_index()
+        self.gameweeks["value_delta"] = self.gameweeks["value_delta"].fillna(0)
+
     def align_player_names(self):
         """
         cleans the players names to align them with the end of season data
@@ -137,7 +149,7 @@ class Gameweeks:
         removes all depreciated columns
         :return: None
         """
-        useful_columns = ["season", "name", "position", "value", "adjusted_points_range", "assists", "goals_scored",
+        useful_columns = ["season", "name", "position", "value", "value_delta", "adjusted_points_range", "assists", "goals_scored",
                           "goals_conceded", "saves", "own_goals", "penalties_missed", "penalties_saved", "clean_sheets",
                           "creativity", "threat", "influence", "bps", "minutes", "yellow_cards", "red_cards",
                           "plays_for", "opponent_team", "was_home", "is_won", "month_of_match", "time_of_match",
