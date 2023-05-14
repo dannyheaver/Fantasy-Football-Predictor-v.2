@@ -113,7 +113,7 @@ class Gameweeks:
         self.gameweeks["is_won"] = [0 if ftr == "D" else 1 if home_or_away == ftr else -1 for home_or_away, ftr in
                                     zipped_results]
 
-    def adjust_points(self):
+    def add_adjusted_points(self):
         """
         adjusts the players points to remove minute earned points, leaving only performance points
         :return: None
@@ -121,3 +121,25 @@ class Gameweeks:
         zipped_point_info = zip(self.gameweeks["minutes"], self.gameweeks["total_points"])
         self.gameweeks["adjusted_points"] = [0 if minutes == 0 else points - 1 if minutes < 60 else points - 2 for
                                              minutes, points in zipped_point_info]
+
+    def add_adjusted_points_range(self):
+        """
+        groups the adjusted points into points cohorts
+        :return: None
+        """
+        shift_points = self.gameweeks["adjusted_points"]
+        self.gameweeks["adjusted_points_range"] = pd.cut(shift_points, [min(shift_points.dropna()), 0, 4, 10,
+                                                                              max(shift_points.dropna())],
+                                                               labels=[0, 1, 2, 3])
+
+    def take_useful_columns(self):
+        """
+        removes all depreciated columns
+        :return:
+        """
+        useful_columns = ["season", "name", "position", "value", "adjusted_points_range", "assists", "goals_scored",
+                          "goals_conceded", "saves", "own_goals", "penalties_missed", "penalties_saved", "clean_sheets",
+                          "creativity", "threat", "influence", "bps", "minutes", "yellow_cards", "red_cards",
+                          "plays_for", "opponent_team", "was_home", "is_won", "month_of_match", "time_of_match",
+                          "win_expectation", "date_of_match"]
+        self.gameweeks = self.gameweeks[useful_columns]
