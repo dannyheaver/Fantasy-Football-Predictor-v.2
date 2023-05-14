@@ -102,3 +102,22 @@ class Gameweeks:
         zipped_bet_odds = zip(self.gameweeks["was_home"], self.gameweeks["B365H"], self.gameweeks["B365A"])
         self.gameweeks["win_expectation"] = [B365A / B365H if was_home else B365H / B365A for was_home, B365H, B365A in
                                              zipped_bet_odds]
+
+    def add_won(self):
+        """
+        adds a boolean column that's true if the players team won the match
+        :return: None
+        """
+        home_or_away = ["H" if was_home else "A" for was_home in self.gameweeks["was_home"]]
+        zipped_results = zip(home_or_away, self.gameweeks["FTR"])
+        self.gameweeks["is_won"] = [0 if ftr == "D" else 1 if home_or_away == ftr else -1 for home_or_away, ftr in
+                                    zipped_results]
+
+    def adjust_points(self):
+        """
+        adjusts the players points to remove minute earned points, leaving only performance points
+        :return: None
+        """
+        zipped_point_info = zip(self.gameweeks["minutes"], self.gameweeks["total_points"])
+        self.gameweeks["adjusted_points"] = [0 if minutes == 0 else points - 1 if minutes < 60 else points - 2 for
+                                             minutes, points in zipped_point_info]

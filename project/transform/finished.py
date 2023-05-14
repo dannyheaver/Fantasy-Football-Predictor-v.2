@@ -38,3 +38,5 @@ for season in gameweeks_dict.keys():
     gameweeks.add_times_of_match()
     gameweeks.join_odds(game_odds)
     gameweeks.add_win_expectation()
+    gameweeks.add_won()
+    gameweeks.adjust_points()
