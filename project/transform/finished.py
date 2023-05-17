@@ -2,7 +2,7 @@
 Transform the gameweeks data of the finished seasons so that it is aligned across seasons.
 """
 import pandas as pd
-from project.models.individual import gameweeks_2018_19, gameweeks_2020_21, gameweeks_2021_22
+from project.transform.individual import gameweeks_2018_19, gameweeks_2020_21, gameweeks_2021_22
 from project.models.gameweeks import Gameweeks
 from project.models.end_of_season import EndOfSeason
 
@@ -43,4 +43,4 @@ for season in gameweeks_dict.keys():
     gameweeks.add_adjusted_points()
     gameweeks.add_adjusted_points_range()
     gameweeks.take_useful_columns()
-    gameweeks.gameweeks.to_csv("../../data/clean_gameweeks/{}-clean-gameweeks.csv".format(season))
+    gameweeks.gameweeks.to_csv("../../data/clean_gameweeks/{}-clean-gameweeks.csv".format(season), index=False)

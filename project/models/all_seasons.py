@@ -3,6 +3,7 @@ Class to transform the unioned gameweeks data.
 """
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
 
 class AllSeasons:
@@ -48,7 +49,8 @@ class AllSeasons:
         """
         mean_points, mean_creativity, mean_threat, mean_influence, mean_bps, mean_goals, mean_assists, mean_conceded = (
             [] for _ in range(8))
-        for player, date in zip(self.all_seasons["name"], self.all_seasons["date_of_match"]):
+        zipped_names = zip(self.all_seasons["name"], self.all_seasons["date_of_match"])
+        for player, date in tqdm(list(zipped_names)):
             players_df = self.all_seasons[
                              (self.all_seasons["name"] == player) & (self.all_seasons["date_of_match"] < date)][
                          :3]
@@ -86,7 +88,7 @@ class AllSeasons:
         shift_points, shift_value, shift_value_delta, shift_opponent, shift_we, shift_mom, shift_tom, shift_home, \
             shift_mean_points, shift_mean_creativity, shift_mean_threat, shift_mean_influence, shift_mean_bps, \
             shift_mean_goals, shift_mean_assists, shift_mean_conceded = ([] for _ in range(16))
-        for player in self.all_seasons["name"].unique():
+        for player in tqdm(list(self.all_seasons["name"].unique())):
             players_df = self.all_seasons[self.all_seasons["name"] == player].sort_values(by="date_of_match",
                                                                                           ascending=False)
             shift_points.append(players_df["adjusted_points"].shift())
@@ -132,7 +134,7 @@ class AllSeasons:
                                                                                                                 range(
                                                                                                                     8))
         zipped_opponent_info = zip(self.all_seasons['name'], self.all_seasons['shift_opponent'])
-        for player, opponent in zipped_opponent_info:
+        for player, opponent in tqdm(list(zipped_opponent_info)):
             players_df = self.all_seasons[
                 (self.all_seasons['name'] == player) & (
                     self.all_seasons['opponent_team'] == opponent)]

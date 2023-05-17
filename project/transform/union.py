@@ -11,6 +11,14 @@ gameweeks = AllSeasons(all_gameweeks)
 
 gameweeks.map_defender_position()
 gameweeks.map_midfielder_position()
+
+print("Calculating rolling means:")
 gameweeks.rolling_mean_metrics()
+
+print("Shifting match info:")
 gameweeks.shift_match_info()
+
+print("Calculating the form against the next opponent:")
 gameweeks.form_against_next_opponent()
+
+gameweeks.all_seasons.to_csv('../../data/all_seasons.csv', index=False)

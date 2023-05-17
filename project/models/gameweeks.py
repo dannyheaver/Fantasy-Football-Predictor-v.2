@@ -149,9 +149,9 @@ class Gameweeks:
         removes all depreciated columns
         :return: None
         """
-        useful_columns = ["season", "name", "position", "value", "value_delta", "adjusted_points_range", "assists", "goals_scored",
-                          "goals_conceded", "saves", "own_goals", "penalties_missed", "penalties_saved", "clean_sheets",
-                          "creativity", "threat", "influence", "bps", "minutes", "yellow_cards", "red_cards",
-                          "plays_for", "opponent_team", "was_home", "is_won", "month_of_match", "time_of_match",
-                          "win_expectation", "date_of_match"]
+        useful_columns = ["season", "name", "position", "value", "value_delta", "adjusted_points",
+                          "adjusted_points_range", "assists", "goals_scored", "goals_conceded", "saves", "own_goals",
+                          "penalties_missed", "penalties_saved", "clean_sheets", "creativity", "threat", "influence",
+                          "bps", "minutes", "yellow_cards", "red_cards", "plays_for", "opponent_team", "was_home",
+                          "is_won", "month_of_match", "time_of_match", "win_expectation", "date_of_match"]
         self.gameweeks = self.gameweeks[useful_columns]
