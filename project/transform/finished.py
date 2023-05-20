@@ -40,7 +40,6 @@ for season in gameweeks_dict.keys():
     gameweeks.join_odds(game_odds)
     gameweeks.add_win_expectation()
     gameweeks.add_won()
-    gameweeks.add_adjusted_points()
-    gameweeks.add_adjusted_points_range()
+    gameweeks.add_total_points_range()
     gameweeks.take_useful_columns()
     gameweeks.gameweeks.to_csv("../../data/clean_gameweeks/{}-clean-gameweeks.csv".format(season), index=False)
