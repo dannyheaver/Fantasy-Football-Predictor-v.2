@@ -2,6 +2,7 @@
 Class to transform the gameweeks data.
 """
 import pandas as pd
+from tqdm import tqdm
 
 
 class Gameweeks:
@@ -131,8 +132,94 @@ class Gameweeks:
         :return: None
         """
         total_points = self.gameweeks["total_points"]
-        self.gameweeks["total_points_range"] = pd.cut(total_points, [total_points.min(), 0, 4, 10,  total_points.max()],
-                                                      labels=[0, 1, 2, 3])
+        self.gameweeks["total_points_range"] = pd.cut(total_points, [total_points.min()-1, 0, 1, 4, 10,
+                                                                     total_points.max()+1], labels=[0, 1, 2, 3, 4])
+    
+    def rolling_mean_metrics(self):
+        """
+        takes the players 3 matches prior to the gameweek and means their metrics for a representation of their form
+        :return: None
+        """
+        mean_points, mean_minutes, mean_creativity, mean_threat, mean_influence, mean_bps, mean_goals, mean_assists, \
+            mean_conceded = ([] for _ in range(9))
+        zipped_names = zip(self.gameweeks["name"], self.gameweeks["date_of_match"])
+        for player, date in tqdm(list(zipped_names)):
+            players_df = self.gameweeks[
+                             (self.gameweeks["name"] == player) & (self.gameweeks["date_of_match"] < date)][
+                         :3]
+            mean_points.append(players_df["total_points"].mean())
+            mean_minutes.append(players_df["minutes"].mean())
+            mean_creativity.append(players_df["creativity"].mean())
+            mean_threat.append(players_df["threat"].mean())
+            mean_influence.append(players_df["influence"].mean())
+            mean_bps.append(players_df["bps"].mean())
+            mean_goals.append(players_df["goals_scored"].mean())
+            mean_assists.append(players_df["assists"].mean())
+            mean_conceded.append(players_df["goals_conceded"].mean())
+        self.gameweeks["mean_total_points"] = mean_points
+        self.gameweeks["mean_minutes"] = mean_minutes
+        self.gameweeks["mean_creativity"] = mean_creativity
+        self.gameweeks["mean_threat"] = mean_threat
+        self.gameweeks["mean_influence"] = mean_influence
+        self.gameweeks["mean_bps"] = mean_bps
+        self.gameweeks["mean_goals"] = mean_goals
+        self.gameweeks["mean_assists"] = mean_assists
+        self.gameweeks["mean_conceded"] = mean_conceded
+        self.gameweeks["mean_total_points"] = self.gameweeks["mean_total_points"].fillna(
+            self.gameweeks["total_points"])
+        self.gameweeks["mean_minutes"] = self.gameweeks["mean_minutes"].fillna(self.gameweeks["minutes"])
+        self.gameweeks["mean_creativity"] = self.gameweeks["mean_creativity"].fillna(self.gameweeks["creativity"])
+        self.gameweeks["mean_threat"] = self.gameweeks["mean_threat"].fillna(self.gameweeks["threat"])
+        self.gameweeks["mean_influence"] = self.gameweeks["mean_influence"].fillna(self.gameweeks["influence"])
+        self.gameweeks["mean_bps"] = self.gameweeks["mean_bps"].fillna(self.gameweeks["bps"])
+        self.gameweeks["mean_goals"] = self.gameweeks["mean_goals"].fillna(self.gameweeks["goals_scored"])
+        self.gameweeks["mean_assists"] = self.gameweeks["mean_assists"].fillna(self.gameweeks["assists"])
+        self.gameweeks["mean_conceded"] = self.gameweeks["mean_conceded"].fillna(self.gameweeks["goals_conceded"])
+
+    def shift_match_info(self):
+        """
+        shift match info and key metrics for each player for their next game
+        :return: None
+        """
+        shift_points_range, shift_value, shift_value_delta, shift_opponent, shift_we, shift_mean_minutes, shift_mom, \
+            shift_tom, shift_home, shift_mean_points, shift_mean_creativity, shift_mean_threat, shift_mean_influence, \
+            shift_mean_bps, shift_mean_goals, shift_mean_assists, shift_mean_conceded = ([] for _ in range(17))
+        for player in tqdm(list(self.gameweeks["name"].unique())):
+            players_df = self.gameweeks[self.gameweeks["name"] == player].sort_values(by="date_of_match", ascending=False)
+            shift_points_range.append(players_df["total_points_range"].shift())
+            shift_value.append(players_df["value"].shift())
+            shift_value_delta.append(players_df["value_delta"].shift())
+            shift_opponent.append(players_df["opponent_team"].shift())
+            shift_we.append(players_df["win_expectation"].shift())
+            shift_mom.append(players_df["month_of_match"].shift())
+            shift_tom.append(players_df["time_of_match"].shift())
+            shift_home.append(players_df["was_home"].shift())
+            shift_mean_minutes.append(players_df["mean_minutes"].shift())
+            shift_mean_points.append(players_df["mean_total_points"].shift())
+            shift_mean_creativity.append(players_df["mean_creativity"].shift())
+            shift_mean_threat.append(players_df["mean_threat"].shift())
+            shift_mean_influence.append(players_df["mean_influence"].shift())
+            shift_mean_bps.append(players_df["mean_bps"].shift())
+            shift_mean_goals.append(players_df["mean_goals"].shift())
+            shift_mean_assists.append(players_df["mean_assists"].shift())
+            shift_mean_conceded.append(players_df["mean_conceded"].shift())
+        self.gameweeks["shift_total_points_range"] = pd.concat(shift_points_range).sort_index()
+        self.gameweeks["shift_value"] = pd.concat(shift_value).sort_index()
+        self.gameweeks["shift_value_delta"] = pd.concat(shift_value_delta).sort_index()
+        self.gameweeks["shift_opponent"] = pd.concat(shift_opponent).sort_index()
+        self.gameweeks["shift_win_expectation"] = pd.concat(shift_we).sort_index()
+        self.gameweeks["shift_month_of_match"] = pd.concat(shift_mom).sort_index()
+        self.gameweeks["shift_time_of_match"] = pd.concat(shift_tom).sort_index()
+        self.gameweeks["shift_was_home"] = pd.concat(shift_home).sort_index()
+        self.gameweeks["shift_mean_minutes"] = pd.concat(shift_mean_minutes).sort_index()
+        self.gameweeks["shift_mean_total_points"] = pd.concat(shift_mean_points).sort_index()
+        self.gameweeks["shift_mean_creativity"] = pd.concat(shift_mean_creativity).sort_index()
+        self.gameweeks["shift_mean_threat"] = pd.concat(shift_mean_threat).sort_index()
+        self.gameweeks["shift_mean_influence"] = pd.concat(shift_mean_influence).sort_index()
+        self.gameweeks["shift_mean_bps"] = pd.concat(shift_mean_bps).sort_index()
+        self.gameweeks["shift_mean_goals"] = pd.concat(shift_mean_goals).sort_index()
+        self.gameweeks["shift_mean_assists"] = pd.concat(shift_mean_assists).sort_index()
+        self.gameweeks["shift_mean_conceded"] = pd.concat(shift_mean_conceded).sort_index()
 
     def take_useful_columns(self):
         """
@@ -143,5 +230,12 @@ class Gameweeks:
                           "total_points_range", "assists", "goals_scored", "goals_conceded", "saves", "own_goals",
                           "penalties_missed", "penalties_saved", "clean_sheets", "creativity", "threat", "influence",
                           "bps", "minutes", "yellow_cards", "red_cards", "plays_for", "opponent_team", "was_home",
-                          "is_won", "month_of_match", "time_of_match", "win_expectation", "date_of_match"]
+                          "is_won", "month_of_match", "time_of_match", "win_expectation", "date_of_match",
+                          "mean_total_points", "mean_minutes", "mean_creativity", "mean_threat", "mean_influence",
+                          "mean_bps", "mean_goals", "mean_assists", "mean_conceded", "shift_total_points_range",
+                          "shift_value", "shift_value_delta", "shift_opponent", "shift_win_expectation",
+                          "shift_month_of_match", "shift_time_of_match", "shift_was_home", "shift_mean_minutes",
+                          "shift_mean_total_points", "shift_mean_creativity", "shift_mean_threat",
+                          "shift_mean_influence", "shift_mean_bps", "shift_mean_goals", "shift_mean_assists",
+                          "shift_mean_conceded"]
         self.gameweeks = self.gameweeks[useful_columns]

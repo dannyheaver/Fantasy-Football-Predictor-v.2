@@ -16,6 +16,7 @@ gameweeks_dict = {
 }
 
 for season in gameweeks_dict.keys():
+    print(season)
     gameweeks = Gameweeks(gameweeks_dict[season])
 
     gameweeks.add_season(season)
@@ -37,9 +38,17 @@ for season in gameweeks_dict.keys():
     gameweeks.map_opponent_team(game_odds)
     gameweeks.add_teams()
     gameweeks.add_times_of_match()
+
     gameweeks.join_odds(game_odds)
     gameweeks.add_win_expectation()
+
     gameweeks.add_won()
     gameweeks.add_total_points_range()
+
+    print("Rolling Mean Metrics:")
+    gameweeks.rolling_mean_metrics()
+    print("Shifting Match Info:")
+    gameweeks.shift_match_info()
+
     gameweeks.take_useful_columns()
     gameweeks.gameweeks.to_csv("../../data/clean_gameweeks/{}-clean-gameweeks.csv".format(season), index=False)
