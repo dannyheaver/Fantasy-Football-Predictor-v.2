@@ -101,6 +101,6 @@ class AllSeasons:
                           "points_against_shift_opponent", "creativity_against_shift_opponent",
                           "threat_against_shift_opponent", "influence_against_shift_opponent",
                           "bps_against_shift_opponent", "goals_against_shift_opponent",
-                          "assists_against_shift_opponent", "conceded_against_shift_opponent", "date_of_match"]
+                          "assists_against_shift_opponent", "conceded_against_shift_opponent"]
         self.all_seasons = self.all_seasons[useful_columns]
 
