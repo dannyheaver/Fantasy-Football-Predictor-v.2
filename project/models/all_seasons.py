@@ -88,6 +88,14 @@ class AllSeasons:
         self.all_seasons["conceded_against_shift_opponent"] = self.all_seasons[
             "conceded_against_shift_opponent"].fillna(self.all_seasons["mean_conceded"])
 
+    def only_take_minutes_played(self):
+        """
+        only take players that have played minutes in their next game to train the model
+        :return: None
+        """
+        self.all_seasons = self.all_seasons[(self.all_seasons["shift_minutes"] > 0) |
+                                            (self.all_seasons["shift_minutes"].isnull())]
+
     def take_useful_columns(self):
         """
         removes all depreciated columns
